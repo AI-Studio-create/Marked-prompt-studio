@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marked Prompt Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --black: #000000;
+  --cream: #F2EDE6;
+  --cream-dim: #A89F96;
+  --cream-faint: #3A3530;
+  --border: rgba(242,237,230,0.1);
+  --border-hover: rgba(242,237,230,0.25);
+  --pill-on-bg: #F2EDE6;
+  --pill-on-text: #000000;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--black); }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--black);
+  color: var(--cream);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* HEADER */
+.header {
+  border-bottom: 0.5px solid var(--border);
+  padding: 2.5rem 2rem 2rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.brand-handle {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--cream-dim);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.brand-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 7vw, 64px);
+  font-weight: 400;
+  line-height: 0.95;
+  color: var(--cream);
+  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
+}
+.brand-title span {
+  display: block;
+}
+.brand-tagline {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  color: var(--cream-dim);
+  text-transform: uppercase;
+}
+.lang-bar {
+  display: flex;
+  gap: 0;
+  align-self: flex-start;
+  margin-top: 4px;
+  border: 0.5px solid var(--border-hover);
+}
+.lang-btn {
+  padding: 7px 18px;
+  border: none;
+  background: transparent;
+  color: var(--cream-dim);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+}
+.lang-btn:first-child { border-right: 0.5px solid var(--border-hover); }
+.lang-btn.active {
+  background: var(--cream);
+  color: var(--black);
+}
+
+/* MAIN */
+.main { max-width: 860px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+/* BLOCKS */
+.block {
+  border-bottom: 0.5px solid var(--border);
+  padding: 2rem 0;
+}
+.block-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+.block-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--cream-dim);
+  letter-spacing: 0.1em;
+  min-width: 20px;
+}
+.block-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--cream);
+  letter-spacing: 0.01em;
+}
+.block-hint {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--cream-dim);
+  margin-bottom: 1.5rem;
+  margin-left: 36px;
+  line-height: 1.6;
+  max-width: 580px;
+}
+
+/* ROWS */
+.row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  margin-left: 36px;
+}
+.row:last-child { margin-bottom: 0; }
+.lbl {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  min-width: 130px;
+  padding-top: 7px;
+  line-height: 1.4;
+}
+
+/* INPUTS */
+textarea, input[type=text] {
+  flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  background: transparent;
+  border: 0.5px solid var(--border-hover);
+  border-radius: 0;
+  padding: 9px 12px;
+  color: var(--cream);
+  resize: none;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+textarea::placeholder, input::placeholder { color: var(--cream-faint); }
+textarea:focus, input:focus { border-color: rgba(242,237,230,0.5); }
+
+/* PILLS */
+.pills { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
+.pill {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  padding: 6px 14px;
+  border: 0.5px solid var(--border-hover);
+  background: transparent;
+  color: var(--cream-dim);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.12s;
+  font-family: 'Inter', sans-serif;
+  border-radius: 0;
+}
+.pill:hover { border-color: rgba(242,237,230,0.45); color: var(--cream); }
+.pill.on {
+  background: var(--cream);
+  color: var(--black);
+  border-color: var(--cream);
+}
+
+/* GENERATE BUTTON */
+.gen-wrap { padding: 2.5rem 0 0; }
+.gen-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--cream);
+  color: var(--black);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.gen-btn:hover { opacity: 0.88; }
+
+/* OUTPUT */
+.out-wrap { margin-top: 2rem; display: none; }
+.out-label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-bottom: 12px;
+}
+.out {
+  background: #0A0A0A;
+  border: 0.5px solid var(--border-hover);
+  padding: 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--cream);
+  white-space: pre-wrap;
+}
+.out-section-head {
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--cream-dim);
+}
+.out-actions {
+  display: flex;
+  gap: 0;
+  margin-top: 12px;
+}
+.out-btn {
+  padding: 10px 24px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--cream-dim);
+  border: 0.5px solid var(--border-hover);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.out-btn:hover { color: var(--cream); border-color: rgba(242,237,230,0.45); }
+.out-btn.primary {
+  background: var(--cream);
+  color: var(--black);
+  border-color: var(--cream);
+  margin-right: 8px;
+}
+.out-btn.primary:hover { opacity: 0.88; }
+
+/* FOOTER */
+.footer {
+  border-top: 0.5px solid var(--border);
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-left {
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--cream-faint);
+  text-transform: uppercase;
+}
+.footer-right {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  color: var(--cream-faint);
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="brand-handle">@lola_marked</div>
+      <div class="brand-title">
+        <span>Marked</span>
+        <span>Prompt</span>
+        <span>Studio</span>
+      </div>
+      <div class="brand-tagline">Mark your Feed</div>
+    </div>
+    <div class="lang-bar">
+      <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+      <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- BLOCK 1 -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">01</span>
+      <span class="block-title" data-en="Identity Lock" data-es="Bloqueo de Identidad"></span>
+    </div>
+    <div class="block-hint" data-en="Tell the AI to preserve a face or body from a reference photo. This is always the first instruction — it anchors everything that follows." data-es="Indica a la IA que preserve un rostro o cuerpo de una foto de referencia. Esta es siempre la primera instrucción — ancla todo lo que sigue."></div>
+    <div class="row">
+      <span class="lbl" data-en="Face source" data-es="Fuente del rostro"></span>
+      <div class="pills" id="face_src">
+        <span class="pill" data-en="Use uploaded photo — preserve exact face" data-es="Usar foto subida — preservar rostro exacto" onclick="tog(this)"></span>
+        <span class="pill" data-en="No face reference — generate freely" data-es="Sin referencia — generar libremente" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Body reference" data-es="Referencia corporal"></span>
+      <div class="pills" id="body_src">
+        <span class="pill" data-en="Keep body shape from photo" data-es="Mantener figura de la foto" onclick="tog(this)"></span>
+        <span class="pill" data-en="Apply outfit from reference image" data-es="Aplicar ropa de imagen de referencia" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Lock note" data-es="Nota de bloqueo"></span>
+      <input type="text" id="lock_note" data-ph-en="e.g. Do not alter skin tone, eye color or hair texture" data-ph-es="ej. No cambiar tono de piel, color de ojos ni textura del cabello" />
+    </div>
+  </div>
+
+  <!-- BLOCK 2 -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">02</span>
+      <span class="block-title" data-en="Scene Concept" data-es="Concepto de Escena"></span>
+    </div>
+    <div class="block-hint" data-en="The cinematic situation — where is she, what is the context, what story does the image tell before a single word is read." data-es="La situación cinematográfica — dónde está, cuál es el contexto, qué historia cuenta la imagen antes de leer una sola palabra."></div>
+    <div class="row">
+      <span class="lbl" data-en="Setting" data-es="Escenario"></span>
+      <div class="pills" id="setting">
+        <span class="pill" data-en="Inside a luxury convertible" data-es="Dentro de un descapotable de lujo" onclick="tog(this)"></span>
+        <span class="pill" data-en="Urban street / city night" data-es="Calle urbana / noche en ciudad" onclick="tog(this)"></span>
+        <span class="pill" data-en="Studio / neutral background" data-es="Estudio / fondo neutro" onclick="tog(this)"></span>
+        <span class="pill" data-en="Bedroom / intimate space" data-es="Dormitorio / espacio íntimo" onclick="tog(this)"></span>
+        <span class="pill" data-en="Rooftop / open sky" data-es="Azotea / cielo abierto" onclick="tog(this)"></span>
+        <span class="pill" data-en="Raw concrete / industrial" data-es="Hormigón crudo / industrial" onclick="tog(this)"></span>
+        <span class="pill" data-en="Poolside / Mediterranean" data-es="Piscina / Mediterráneo" onclick="tog(this)"></span>
+        <span class="pill" data-en="Fashion week / backstage" data-es="Fashion week / backstage" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Scene detail" data-es="Detalle de escena"></span>
+      <textarea id="scene_detail" rows="2" data-ph-en="e.g. Convertible with roof down, black and red interior, visible steering wheel, dashboard elements, city lights blurred behind..." data-ph-es="ej. Descapotable con techo abierto, interior negro y rojo, volante visible, elementos del salpicadero, luces de ciudad desenfocadas detrás..."></textarea>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Story / mood" data-es="Historia / mood"></span>
+      <div class="pills" id="story">
+        <span class="pill" data-en="Glamour & freedom" data-es="Glamour y libertad" onclick="tog(this)"></span>
+        <span class="pill" data-en="Luxury & confidence" data-es="Lujo y confianza" onclick="tog(this)"></span>
+        <span class="pill" data-en="Playful & intimate" data-es="Juguetón e íntimo" onclick="tog(this)"></span>
+        <span class="pill" data-en="Raw & effortless" data-es="Natural y desenfadado" onclick="tog(this)"></span>
+        <span class="pill" data-en="Power & dominance" data-es="Poder y dominio" onclick="tog(this)"></span>
+        <span class="pill" data-en="Mystery & tension" data-es="Misterio y tensión" onclick="tog(this)"></span>
+        <span class="pill" data-en="Cold elegance" data-es="Elegancia fría" onclick="tog(this)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3 -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">03</span>
+      <span class="block-title" data-en="Appearance & Outfit" data-es="Apariencia y Outfit"></span>
+    </div>
+    <div class="block-hint" data-en="Name every material, texture and color with precision. Never 'dark red' — say 'burgundy / wine / plum'. Never 'shiny fabric' — say 'lacquered leather' or 'vinyl'." data-es="Nombra cada material, textura y color con precisión. Nunca 'rojo oscuro' — di 'burdeos / vino / ciruela'. Nunca 'tela brillante' — di 'cuero lacado' o 'vinilo'."></div>
+    <div class="row">
+      <span class="lbl" data-en="Hair" data-es="Cabello"></span>
+      <div class="pills" id="hair">
+        <span class="pill" data-en="Long blonde waves" data-es="Ondas largas rubias" onclick="tog(this)"></span>
+        <span class="pill" data-en="Long straight black" data-es="Liso largo negro" onclick="tog(this)"></span>
+        <span class="pill" data-en="Short brunette" data-es="Corto castaño" onclick="tog(this)"></span>
+        <span class="pill" data-en="Slicked back" data-es="Recogido hacia atrás" onclick="tog(this)"></span>
+        <span class="pill" data-en="Center part, straight" data-es="Raya al centro, liso" onclick="tog(this)"></span>
+        <span class="pill" data-en="Curly / voluminous" data-es="Rizado / voluminoso" onclick="tog(this)"></span>
+        <span class="pill" data-en="Loose updo" data-es="Recogido suelto" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Makeup" data-es="Maquillaje"></span>
+      <div class="pills" id="makeup">
+        <span class="pill" data-en="Bold red lips, accentuated eyes" data-es="Labios rojos, ojos marcados" onclick="tog(this)"></span>
+        <span class="pill" data-en="Nude lips, full lashes" data-es="Labios nude, pestañas voluminosas" onclick="tog(this)"></span>
+        <span class="pill" data-en="Gloss lips, natural skin" data-es="Labios con gloss, piel natural" onclick="tog(this)"></span>
+        <span class="pill" data-en="Smoky eye, minimal lips" data-es="Ahumado, labios mínimos" onclick="tog(this)"></span>
+        <span class="pill" data-en="No makeup / bare skin" data-es="Sin maquillaje / piel al natural" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Main garment" data-es="Prenda principal"></span>
+      <textarea id="garment" rows="2" data-ph-en="e.g. Shiny burgundy mini dress, high neckline, short hem — lacquered leather / vinyl material, form-fitting, emphasizing the figure..." data-ph-es="ej. Mini vestido burdeos brillante, cuello alto, dobladillo corto — material cuero lacado / vinilo, entallado, que enfatiza la figura..."></textarea>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Footwear" data-es="Calzado"></span>
+      <div class="pills" id="shoes">
+        <span class="pill" data-en="Black high-heeled strappy sandals" data-es="Sandalias negras de tacón con tiras" onclick="tog(this)"></span>
+        <span class="pill" data-en="White chunky sneakers" data-es="Zapatillas blancas gruesas" onclick="tog(this)"></span>
+        <span class="pill" data-en="Knee-high boots" data-es="Botas hasta la rodilla" onclick="tog(this)"></span>
+        <span class="pill" data-en="Mules / open-toe heels" data-es="Mules / tacones abiertos" onclick="tog(this)"></span>
+        <span class="pill" data-en="Barefoot" data-es="Descalza" onclick="tog(this)"></span>
+        <span class="pill" data-en="Loafers / flats" data-es="Mocasines / planos" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Accessories" data-es="Accesorios"></span>
+      <div class="pills" id="acc">
+        <span class="pill" data-en="Gold bracelets & watch" data-es="Pulseras doradas y reloj" onclick="tog(this)"></span>
+        <span class="pill" data-en="Thin gold hoop earrings" data-es="Aros finos dorados" onclick="tog(this)"></span>
+        <span class="pill" data-en="Rings on multiple fingers" data-es="Anillos en varios dedos" onclick="tog(this)"></span>
+        <span class="pill" data-en="Quilted chain bag" data-es="Bolso acolchado con cadena" onclick="tog(this)"></span>
+        <span class="pill" data-en="Lace / lingerie layer" data-es="Lencería / capa de encaje" onclick="tog(this)"></span>
+        <span class="pill" data-en="No accessories" data-es="Sin accesorios" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Detail level" data-es="Nivel de detalle"></span>
+      <div class="pills" id="detail_level">
+        <span class="pill" data-en="Fully accented — all details sharp" data-es="Todo visible y destacado" onclick="tog(this)"></span>
+        <span class="pill" data-en="Visible but harmonious — nothing competes" data-es="Visible pero armonioso — nada compite" onclick="tog(this)"></span>
+        <span class="pill" data-en="Minimized / implied" data-es="Minimizado / sugerido" onclick="tog(this)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4 -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">04</span>
+      <span class="block-title" data-en="Pose & Body Language" data-es="Pose y Lenguaje Corporal"></span>
+    </div>
+    <div class="block-hint" data-en="Direct the body like a photographer on set. Describe each limb position, weight shift, hand placement, gaze and micro-expression separately." data-es="Dirige el cuerpo como un fotógrafo en set. Describe cada posición de miembro, desplazamiento de peso, manos, mirada y micro-expresión por separado."></div>
+    <div class="row">
+      <span class="lbl" data-en="Pose type" data-es="Tipo de pose"></span>
+      <div class="pills" id="pose_type">
+        <span class="pill" data-en="Seated, relaxed & elegant" data-es="Sentada, relajada y elegante" onclick="tog(this)"></span>
+        <span class="pill" data-en="Standing, weight on one hip" data-es="De pie, peso en una cadera" onclick="tog(this)"></span>
+        <span class="pill" data-en="Lying on back, overhead angle" data-es="Tumbada boca arriba, ángulo cenital" onclick="tog(this)"></span>
+        <span class="pill" data-en="Walking / mid-motion" data-es="Caminando / en movimiento" onclick="tog(this)"></span>
+        <span class="pill" data-en="Leaning against wall" data-es="Apoyada en la pared" onclick="tog(this)"></span>
+        <span class="pill" data-en="Sitting on floor / ground" data-es="Sentada en el suelo" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Pose detail" data-es="Detalle de pose"></span>
+      <textarea id="pose_detail" rows="2" data-ph-en="e.g. One leg bent, other extended outside the car. One hand rests on the seat, other supports the head — relaxed yet deliberate..." data-ph-es="ej. Una pierna doblada, la otra extendida fuera del auto. Una mano sobre el asiento, la otra apoya la cabeza — relajada pero deliberada..."></textarea>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Gaze & expression" data-es="Mirada y expresión"></span>
+      <div class="pills" id="gaze">
+        <span class="pill" data-en="Direct into camera, confident" data-es="Directo a cámara, confiada" onclick="tog(this)"></span>
+        <span class="pill" data-en="Looking to side, calm & distant" data-es="Mirando al lado, calma y distancia" onclick="tog(this)"></span>
+        <span class="pill" data-en="Winking, playful" data-es="Guiño, juguetona" onclick="tog(this)"></span>
+        <span class="pill" data-en="Covering face with hand" data-es="Cubriendo cara con la mano" onclick="tog(this)"></span>
+        <span class="pill" data-en="Eyes closed / introspective" data-es="Ojos cerrados / introspectiva" onclick="tog(this)"></span>
+        <span class="pill" data-en="Subtle smirk, knowing look" data-es="Sonrisa sutil, mirada cómplice" onclick="tog(this)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 5 -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">05</span>
+      <span class="block-title" data-en="Composition & Camera" data-es="Composición y Cámara"></span>
+    </div>
+    <div class="block-hint" data-en="The camera has a personality. Naming the lens, format and angle is what transforms a generated image into an editorial photograph." data-es="La cámara tiene personalidad. Nombrar el lente, formato y ángulo es lo que transforma una imagen generada en una fotografía editorial."></div>
+    <div class="row">
+      <span class="lbl" data-en="Format" data-es="Formato"></span>
+      <div class="pills" id="format">
+        <span class="pill" data-en="Vertical / portrait" data-es="Vertical / retrato" onclick="tog(this)"></span>
+        <span class="pill" data-en="Horizontal / landscape" data-es="Horizontal / paisaje" onclick="tog(this)"></span>
+        <span class="pill" data-en="Square" data-es="Cuadrado" onclick="tog(this)"></span>
+        <span class="pill" data-en="Diptych — 2 frames stacked" data-es="Díptico — 2 marcos apilados" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Camera angle" data-es="Ángulo de cámara"></span>
+      <div class="pills" id="angle">
+        <span class="pill" data-en="Eye level, straight-on" data-es="A nivel de ojos, frontal" onclick="tog(this)"></span>
+        <span class="pill" data-en="Chest level, slight downward tilt" data-es="A nivel del pecho, ligera inclinación" onclick="tog(this)"></span>
+        <span class="pill" data-en="Top-down / overhead" data-es="Cenital / desde arriba" onclick="tog(this)"></span>
+        <span class="pill" data-en="Low angle, looking up" data-es="Ángulo bajo, mirando hacia arriba" onclick="tog(this)"></span>
+        <span class="pill" data-en="Three-quarter angle" data-es="Ángulo de tres cuartos" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Crop / framing" data-es="Recorte / encuadre"></span>
+      <div class="pills" id="crop">
+        <span class="pill" data-en="Full body" data-es="Cuerpo entero" onclick="tog(this)"></span>
+        <span class="pill" data-en="Cropped at mid-thigh" data-es="Recortado a media muslo" onclick="tog(this)"></span>
+        <span class="pill" data-en="Waist up" data-es="Desde la cintura" onclick="tog(this)"></span>
+        <span class="pill" data-en="Bust / close portrait" data-es="Busto / retrato cercano" onclick="tog(this)"></span>
+        <span class="pill" data-en="Extreme close-up face" data-es="Primer plano extremo del rostro" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Camera / lens" data-es="Cámara / lente"></span>
+      <div class="pills" id="lens">
+        <span class="pill" data-en="35mm film — Contax T2 aesthetic" data-es="35mm film — estética Contax T2" onclick="tog(this)"></span>
+        <span class="pill" data-en="50mm — natural perspective" data-es="50mm — perspectiva natural" onclick="tog(this)"></span>
+        <span class="pill" data-en="85mm — flattering portrait" data-es="85mm — retrato favorecedor" onclick="tog(this)"></span>
+        <span class="pill" data-en="Wide angle — environmental" data-es="Gran angular — ambiental" onclick="tog(this)"></span>
+        <span class="pill" data-en="Selfie / smartphone aesthetic" data-es="Estética selfie / smartphone" onclick="tog(this)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 6 -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">06</span>
+      <span class="block-title" data-en="Light & Technical Style" data-es="Luz y Estilo Técnico"></span>
+    </div>
+    <div class="block-hint" data-en="Light defines the entire emotional register. Film grain, flash type and color science give the image its soul — and separate editorial work from a snapshot." data-es="La luz define el registro emocional completo. El grano de película, tipo de flash y ciencia del color dan alma a la imagen — y separan el trabajo editorial de una foto casual."></div>
+    <div class="row">
+      <span class="lbl" data-en="Light type" data-es="Tipo de luz"></span>
+      <div class="pills" id="light">
+        <span class="pill" data-en="Soft frontal — smooth shadows" data-es="Frontal suave — sombras suaves" onclick="tog(this)"></span>
+        <span class="pill" data-en="Hard directional — dramatic shadows" data-es="Direccional dura — sombras dramáticas" onclick="tog(this)"></span>
+        <span class="pill" data-en="Direct on-camera flash — hard wall shadows" data-es="Flash directo — sombras duras en pared" onclick="tog(this)"></span>
+        <span class="pill" data-en="Soft warm diffused — studio" data-es="Difusa cálida suave — estudio" onclick="tog(this)"></span>
+        <span class="pill" data-en="Night city bokeh — cinematic" data-es="Bokeh nocturno urbano — cinematográfico" onclick="tog(this)"></span>
+        <span class="pill" data-en="Natural window light" data-es="Luz natural de ventana" onclick="tog(this)"></span>
+        <span class="pill" data-en="Golden hour — warm outdoor" data-es="Hora dorada — exterior cálido" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Technical finish" data-es="Acabado técnico"></span>
+      <div class="pills" id="tech">
+        <span class="pill" data-en="Visible film grain" data-es="Grano de película visible" onclick="tog(this)"></span>
+        <span class="pill" data-en="Polaroid color tones" data-es="Tonos de color Polaroid" onclick="tog(this)"></span>
+        <span class="pill" data-en="Slightly cool whites" data-es="Blancos ligeramente fríos" onclick="tog(this)"></span>
+        <span class="pill" data-en="High contrast, sharp focus" data-es="Alto contraste, enfoque nítido" onclick="tog(this)"></span>
+        <span class="pill" data-en="Hyper-realistic, no grain" data-es="Hiper-realista, sin grano" onclick="tog(this)"></span>
+        <span class="pill" data-en="Cinematic color grade" data-es="Gradación de color cinematográfica" onclick="tog(this)"></span>
+        <span class="pill" data-en="Realistic skin texture" data-es="Textura de piel realista" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Color palette" data-es="Paleta de color"></span>
+      <div class="pills" id="palette">
+        <span class="pill" data-en="Cool tones — blues, silvers" data-es="Tonos fríos — azules, platas" onclick="tog(this)"></span>
+        <span class="pill" data-en="Warm tones — golds, ambers" data-es="Tonos cálidos — dorados, ámbar" onclick="tog(this)"></span>
+        <span class="pill" data-en="High contrast B&W" data-es="B&N alto contraste" onclick="tog(this)"></span>
+        <span class="pill" data-en="Rich saturated colors" data-es="Colores ricos y saturados" onclick="tog(this)"></span>
+        <span class="pill" data-en="Desaturated / muted tones" data-es="Tonos desaturados / apagados" onclick="tog(this)"></span>
+        <span class="pill" data-en="Warm skin — olive, terracotta, rust" data-es="Piel cálida — oliva, terracota, óxido" onclick="tog(this)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 7 -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">07</span>
+      <span class="block-title" data-en="Editorial Intention" data-es="Intención Editorial"></span>
+    </div>
+    <div class="block-hint" data-en="The cultural reference and final emotional declaration. This single layer is what separates a photo from an editorial image. Name the world it belongs to." data-es="La referencia cultural y la declaración emocional final. Esta capa es lo que separa una foto de una imagen editorial. Nombra el mundo al que pertenece."></div>
+    <div class="row">
+      <span class="lbl" data-en="Style reference" data-es="Referencia de estilo"></span>
+      <div class="pills" id="style_ref">
+        <span class="pill" data-en="Glossy fashion magazine editorial" data-es="Editorial de revista de moda" onclick="tog(this)"></span>
+        <span class="pill" data-en="Y2K — raw, sexy, non-posed realism" data-es="Y2K — crudo, sexy, realismo sin posar" onclick="tog(this)"></span>
+        <span class="pill" data-en="Influencer — social media campaign" data-es="Influencer — campaña para redes" onclick="tog(this)"></span>
+        <span class="pill" data-en="High fashion — Vogue / W Magazine" data-es="Alta moda — Vogue / W Magazine" onclick="tog(this)"></span>
+        <span class="pill" data-en="Luxury brand campaign" data-es="Campaña de marca de lujo" onclick="tog(this)"></span>
+        <span class="pill" data-en="Street photography — candid realism" data-es="Fotografía callejera — realismo" onclick="tog(this)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Final feeling" data-es="Sentimiento final"></span>
+      <input type="text" id="final_feel" data-ph-en="e.g. Cold elegance, unstoppable confidence, luxury power, playful intimacy..." data-ph-es="ej. Elegancia fría, confianza imparable, poder de lujo, intimidad juguetona..." />
+    </div>
+    <div class="row">
+      <span class="lbl" data-en="Quality" data-es="Calidad"></span>
+      <div class="pills" id="quality">
+        <span class="pill" data-en="Hyper-realistic photo" data-es="Foto hiper-realista" onclick="tog(this)"></span>
+        <span class="pill" data-en="High resolution, sharp details" data-es="Alta resolución, detalles nítidos" onclick="tog(this)"></span>
+        <span class="pill" data-en="Staged editorial photoshoot look" data-es="Aspecto de sesión fotográfica editorial" onclick="tog(this)"></span>
+        <span class="pill" data-en="Photomontage / composite" data-es="Fotomontaje / composición" onclick="tog(this)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GENERATE -->
+  <div class="gen-wrap">
+    <button class="gen-btn" onclick="build()" id="gen-btn">Generate Prompt</button>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="out-wrap" id="out-wrap">
+    <div class="out-label" id="out-label">Your Prompt</div>
+    <div class="out" id="output"></div>
+    <div class="out-actions">
+      <button class="out-btn primary" onclick="copyOut()" id="copy-btn">Copy Prompt</button>
+      <button class="out-btn" onclick="clearAll()" id="clear-btn">Clear All</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-left">Marked Prompt Studio &nbsp;·&nbsp; @lola_marked</div>
+  <div class="footer-right">Mark your Feed</div>
+</div>
+
+<script>
+var lang = 'en';
+var T = {
+  en: {
+    genBtn: 'Generate Prompt',
+    copy: 'Copy Prompt',
+    copied: 'Copied',
+    clear: 'Clear All',
+    outLabel: 'Your Prompt',
+    empty: 'Fill in at least a few fields before generating.',
+    H: ['1. IDENTITY LOCK','2. SCENE CONCEPT','3. APPEARANCE & OUTFIT','4. POSE & BODY LANGUAGE','5. COMPOSITION & CAMERA','6. LIGHT & TECHNICAL STYLE','7. EDITORIAL INTENTION']
+  },
+  es: {
+    genBtn: 'Generar Prompt',
+    copy: 'Copiar Prompt',
+    copied: 'Copiado',
+    clear: 'Limpiar Todo',
+    outLabel: 'Tu Prompt',
+    empty: 'Completa al menos algunos campos antes de generar.',
+    H: ['1. BLOQUEO DE IDENTIDAD','2. CONCEPTO DE ESCENA','3. APARIENCIA Y OUTFIT','4. POSE Y LENGUAJE CORPORAL','5. COMPOSICIÓN Y CÁMARA','6. LUZ Y ESTILO TÉCNICO','7. INTENCIÓN EDITORIAL']
+  }
+};
+
+function setLang(l, btn) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('[data-en]').forEach(function(el){
+    if (!el.classList.contains('pill')) el.textContent = el.getAttribute('data-' + l);
+  });
+  document.querySelectorAll('.pill').forEach(function(p){
+    p.textContent = p.getAttribute('data-' + l);
+  });
+  document.querySelectorAll('[data-ph-en]').forEach(function(el){
+    el.placeholder = el.getAttribute('data-ph-' + l);
+  });
+  document.getElementById('gen-btn').textContent = T[l].genBtn;
+  document.getElementById('copy-btn').textContent = T[l].copy;
+  document.getElementById('clear-btn').textContent = T[l].clear;
+  document.getElementById('out-label').textContent = T[l].outLabel;
+}
+
+function tog(el){ el.classList.toggle('on'); }
+
+function getPills(id){
+  return Array.from(document.querySelectorAll('#'+id+' .pill.on')).map(function(p){
+    return p.getAttribute('data-'+lang);
+  }).join(', ');
+}
+
+function val(id){ return document.getElementById(id).value.trim(); }
+
+function build(){
+  var H = T[lang].H;
+  var parts = [];
+
+  var s1=[], faceSrc=getPills('face_src'), bodySrc=getPills('body_src'), lockNote=val('lock_note');
+  if(faceSrc) s1.push(faceSrc+'.');
+  if(bodySrc) s1.push(bodySrc+'.');
+  if(lockNote) s1.push(lockNote+'.');
+  if(s1.length) parts.push(H[0]+'\n'+s1.join(' '));
+
+  var s2=[], setting=getPills('setting'), sceneDetail=val('scene_detail'), story=getPills('story');
+  if(setting) s2.push('Setting: '+setting+'.');
+  if(sceneDetail) s2.push(sceneDetail);
+  if(story) s2.push('Mood: '+story+'.');
+  if(s2.length) parts.push(H[1]+'\n'+s2.join(' '));
+
+  var s3=[], hair=getPills('hair'), makeup=getPills('makeup'), garment=val('garment'),
+      shoes=getPills('shoes'), acc=getPills('acc'), detailLvl=getPills('detail_level');
+  if(hair) s3.push('Hair: '+hair+'.');
+  if(makeup) s3.push('Makeup: '+makeup+'.');
+  if(garment) s3.push(garment);
+  if(shoes) s3.push('Footwear: '+shoes+'.');
+  if(acc) s3.push('Accessories: '+acc+'.');
+  if(detailLvl) s3.push('Detail level: '+detailLvl+'.');
+  if(s3.length) parts.push(H[2]+'\n'+s3.join(' '));
+
+  var s4=[], poseType=getPills('pose_type'), poseDetail=val('pose_detail'), gaze=getPills('gaze');
+  if(poseType) s4.push(poseType+'.');
+  if(poseDetail) s4.push(poseDetail);
+  if(gaze) s4.push('Gaze: '+gaze+'.');
+  if(s4.length) parts.push(H[3]+'\n'+s4.join(' '));
+
+  var s5=[], format=getPills('format'), angle=getPills('angle'), crop=getPills('crop'), lens=getPills('lens');
+  if(format) s5.push('Format: '+format+'.');
+  if(angle) s5.push('Angle: '+angle+'.');
+  if(crop) s5.push('Framing: '+crop+'.');
+  if(lens) s5.push('Camera: '+lens+'.');
+  if(s5.length) parts.push(H[4]+'\n'+s5.join(' '));
+
+  var s6=[], light=getPills('light'), tech=getPills('tech'), palette=getPills('palette');
+  if(light) s6.push('Lighting: '+light+'.');
+  if(tech) s6.push('Technical: '+tech+'.');
+  if(palette) s6.push('Color: '+palette+'.');
+  if(s6.length) parts.push(H[5]+'\n'+s6.join(' '));
+
+  var s7=[], styleRef=getPills('style_ref'), finalFeel=val('final_feel'), quality=getPills('quality');
+  if(styleRef) s7.push('Visual style: '+styleRef+'.');
+  if(finalFeel) s7.push('The final image should feel: '+finalFeel+'.');
+  if(quality) s7.push('Quality: '+quality+'.');
+  if(s7.length) parts.push(H[6]+'\n'+s7.join(' '));
+
+  if(parts.length===0){ alert(T[lang].empty); return; }
+
+  var out = document.getElementById('output');
+  out.textContent = parts.join('\n\n');
+  var wrap = document.getElementById('out-wrap');
+  wrap.style.display = 'block';
+  wrap.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function copyOut(){
+  navigator.clipboard.writeText(document.getElementById('output').textContent).then(function(){
+    var btn = document.getElementById('copy-btn');
+    var orig = T[lang].copy;
+    btn.textContent = T[lang].copied;
+    setTimeout(function(){ btn.textContent = orig; }, 1800);
+  });
+}
+
+function clearAll(){
+  document.querySelectorAll('.pill.on').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('textarea, input[type=text]').forEach(function(el){ el.value=''; });
+  document.getElementById('output').textContent = '';
+  document.getElementById('out-wrap').style.display = 'none';
+}
+
+setLang('en', document.querySelector('.lang-btn.active'));
+</script>
+</body>
+</html>
